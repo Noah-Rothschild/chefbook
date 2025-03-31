@@ -1,0 +1,19 @@
+# Ignore virtual environment
+venv/
+env/
+
+# Ignore database files
+*.sqlite3
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+
+# Ignore environment variables
+.env
+
+# Ignore Node.js dependencies (if using React)
+node_modules/
+
+# Ignore VS Code settings (optional)
+.vscode/ 
