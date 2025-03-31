@@ -2,8 +2,9 @@
 venv/
 env/
 
-# Ignore database files
-*.sqlite3
+# Ignore PostgreSQL-related files
+*.pgdata
+*.pgsql
 
 # Ignore compiled Python files
 __pycache__/
@@ -12,8 +13,8 @@ __pycache__/
 # Ignore environment variables
 .env
 
-# Ignore Node.js dependencies (if using React)
+# Ignore Node.js dependencies
 node_modules/
 
-# Ignore VS Code settings (optional)
+# Ignore VS Code settings
 .vscode/ 
