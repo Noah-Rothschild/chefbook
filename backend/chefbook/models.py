@@ -13,8 +13,9 @@ class Pantry(models.Model):
 class Recipe(models.Model):
     title = models.CharField(max_length=100)
     instructions = models.TextField()
-    ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient')
+    ingredient = models.ManyToManyField(Ingredient, through='RecipeIngredient')
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    quantity = models.CharField(max_length=100)
