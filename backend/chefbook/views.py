@@ -19,6 +19,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 class PantryViewSet(viewsets.ModelViewSet):
+    queryset = Pantry.objects.all()
     serializer_class = PantrySerializer
     permission_classes = [IsAuthenticated]
 
