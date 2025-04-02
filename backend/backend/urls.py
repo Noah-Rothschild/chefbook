@@ -10,4 +10,5 @@ urlpatterns = [
     path('chefbook/token/', TokenObtainPairView.as_view(), name='get_token'),
     path('chefbook/token/refresh/', TokenRefreshView.as_view(), name='refresh'),
     path('chefbook-auth/', include('rest_framework.urls')),
+    path('api/', include('chefbook.urls')),
 ]
