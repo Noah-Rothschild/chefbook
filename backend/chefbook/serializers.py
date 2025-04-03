@@ -15,10 +15,10 @@ class UserSerializer(serializers.ModelSerializer):
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'category']
 
 class PantrySerializer(serializers.ModelSerializer):
-    ingredient = IngredientSerializer()
+    ingredient = IngredientSerializer(many=True, read_only=True)
 
     class Meta:
         model = Pantry
