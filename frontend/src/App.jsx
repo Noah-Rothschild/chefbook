@@ -19,8 +19,6 @@ function RegisterAndLogout() {
 }
 
 function App() {
-  const { isAuthentcated } = useAuth();
-
   return (
     <BrowserRouter>
       <Routes>

@@ -22,7 +22,7 @@ function Form({ route, method }) {
       if (isLogin) {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-        navigate("/");
+        navigate("/pantry");
       } else {
         navigate("/login");
       }
@@ -53,7 +53,7 @@ function Form({ route, method }) {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
         />
-        
+
         <button className="form-button" type="submit">
           {name}
         </button>
