@@ -18,11 +18,11 @@ class IngredientSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'category']
 
 class PantrySerializer(serializers.ModelSerializer):
-    ingredient = IngredientSerializer(many=True, read_only=True)
+    #ingredient = IngredientSerializer(many=True, read_only=True)
 
     class Meta:
         model = Pantry
-        fields = ['id', 'user', 'ingredient']
+        fields = ['ingredient_id', 'user', 'ingredient_name']
         extra_kwargs = {'user':{'read_only': True}}
 
 class RecipeSerializer(serializers.ModelSerializer):
