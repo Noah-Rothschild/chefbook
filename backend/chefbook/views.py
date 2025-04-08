@@ -14,7 +14,7 @@ class CreateUserView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 class IngredientViewSet(viewsets.ModelViewSet):
-    queryset = Ingredient.objects.all()
+    queryset = Ingredient.objects.all().order_by('name')
     serializer_class = IngredientSerializer
     permission_classes = [IsAuthenticated]
 

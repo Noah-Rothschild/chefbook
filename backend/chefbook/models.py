@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 
 class Ingredient(models.Model):
     spoonacular_id = models.IntegerField(unique=True)
-    name = models.CharField(max=100)
+    name = models.CharField(max_length=100)
     category = models.CharField(max_length=50)
     image = models.URLField(blank=True)
 

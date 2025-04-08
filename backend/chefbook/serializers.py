@@ -15,14 +15,18 @@ class UserSerializer(serializers.ModelSerializer):
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ['id', 'name', 'category']
+        fields = ['id', 'spoonacular_id' 'name', 'category', 'image']
 
 class PantrySerializer(serializers.ModelSerializer):
     #ingredient = IngredientSerializer(many=True, read_only=True)
+    ingredient = serializers.SlugRelatedField(
+        slug_field ='name',
+        queryset = Ingredient.objects.all()
+    )
 
     class Meta:
         model = Pantry
-        fields = ['ingredient_id', 'user', 'ingredient_name']
+        fields = ['id', 'user', 'ingredient']
         extra_kwargs = {'user':{'read_only': True}}
 
 class RecipeSerializer(serializers.ModelSerializer):
