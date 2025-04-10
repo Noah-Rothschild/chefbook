@@ -39,7 +39,7 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
         return PantryIngredient.objects.filter(pantry__user= self.request.user)
 
     def perform_create(self, serializer):
-        pantry = serializer.validated_data['pantry']
+        pantry = self.request.user.pantry
         ingredient = serializer.validated_data['ingredient']
 
         if PantryIngredient.objects.filter(pantry=pantry, ingredient=ingredient).exists():

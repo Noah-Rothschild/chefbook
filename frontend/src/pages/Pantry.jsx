@@ -13,7 +13,6 @@ function Pantry() {
     const fetchPantry = async () => {
       try {
         const res = await api.get("/api/pantry-ingredients/");
-        console.log("pantry response: ", res.data);
         setPantry(res.data);
       } catch (err) {
         console.log(err);
@@ -34,19 +33,10 @@ function Pantry() {
     fetchIngredients();
   }, []);
 
-  const handleInputChange = (e) => {
-    const val = e.target.value;
-    setQuery(val);
-    const filteredResults = allIngredients.filter((ing) =>
-      ing.name.toLowerCase().includes(val.toLowerCase())
-    );
-    setFiltered(filteredResults.slice(0, 5));
-  };
-
   const getPantryId = async () => {
     try {
       const res = await api.get("api/pantry/");
-      const pantryId = res.data.id;
+      const pantryId = res.data[0].id;
       setPantryId(pantryId);
     } catch (err) {
       console.log(err);
@@ -55,7 +45,16 @@ function Pantry() {
 
   useEffect(() => {
     getPantryId();
-  });
+  }, []);
+
+  const handleInputChange = (e) => {
+    const val = e.target.value;
+    setQuery(val);
+    const filteredResults = allIngredients.filter((ing) =>
+      ing.name.toLowerCase().includes(val.toLowerCase())
+    );
+    setFiltered(filteredResults.slice(0, 5));
+  };
 
   const handleSelect = async (ingredient) => {
     if (!pantryId) {
@@ -78,7 +77,7 @@ function Pantry() {
 
   const handleDelete = async (id) => {
     try {
-      await api.delete("/api/pantry-ingredients/${id}");
+      await api.delete("/api/pantry-ingredients/${id}/");
       setPantry(pantry.filter((item) => item.id !== id));
     } catch (err) {
       console.log(err);

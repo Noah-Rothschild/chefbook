@@ -7,7 +7,7 @@ class Ingredient(models.Model):
     category = models.CharField(max_length=100)
 
 class Pantry(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='pantry')
     ingredients = models.ManyToManyField(Ingredient, through='PantryIngredient')
     
 class PantryIngredient(models.Model):

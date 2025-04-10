@@ -25,12 +25,12 @@ class PantryIngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PantryIngredient
-        fields = ['id', 'ingredient']
+        fields = ['id', 'pantry', 'ingredient']
 
 class PantrySerializer(serializers.ModelSerializer):
     
 
     class Meta:
         model = Pantry
-        fields = ['id', 'user', 'ingredients']
+        fields = ['id', 'user']
         extra_kwargs = {'user':{'read_only': True}}
