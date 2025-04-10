@@ -1,11 +1,12 @@
 from django.shortcuts import render
+from rest_framework.exceptions import ValidationError
 from django.contrib.auth.models import User
 from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import UserSerializer, PantrySerializer, IngredientSerializer, RecipeSerializer, RecipeIngredientSerializer
+from .serializers import UserSerializer, PantrySerializer, IngredientSerializer, PantryIngredientSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Ingredient, Pantry, Recipe, RecipeIngredient
+from .models import Ingredient, Pantry, PantryIngredient
 
 # Create your views here.
 class CreateUserView(generics.CreateAPIView):
@@ -29,17 +30,16 @@ class PantryViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-class RecipeViewSet(viewsets.ModelViewSet):
-    queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
-    permission_classes = [IsAuthenticated]
+class PantryIngredientViewSet(viewsets.ModelViewSet):
+    queryset = PantryIngredient.objects.all()
+    serializer_class = PantryIngredientSerializer
 
-class RecipeSuggestionView(APIView):
-    permission_classes = [IsAuthenticated]
+    def perform_create(self, serializer):
+        pantry = serializer.validated_data['pantry']
+        ingredient = serializer.validated_data['ingredient']
 
-    def get(self, request):
-        user_ingredients = Pantry.objects.filter(user=request.user).values_list('ingredient', flat=True)
-        recipes = Recipe.objects.filter(ingredients__in=user_ingredients).distinct()
-        serializer = RecipeSerializer(recipes, many=True)
-        return Response(serializer.data)
+        if Pantry.objects.filter(pantry=pantry, ingredient=ingredient).exists():
+            raise ValidationError('This ingredient is already in your pantry')
+        serializer.save()
+
 

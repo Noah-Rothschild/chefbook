@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Ingredient, Pantry, Recipe, RecipeIngredient, PantryIngredient
+from .models import Ingredient, Pantry, PantryIngredient
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,18 +31,3 @@ class PantrySerializer(serializers.ModelSerializer):
         model = Pantry
         fields = ['id', 'user', 'ingredients']
         extra_kwargs = {'user':{'read_only': True}}
-
-
-class RecipeSerializer(serializers.ModelSerializer):
-    ingredient = IngredientSerializer()
-
-    class Meta:
-        model = Recipe
-        fields = ['id', 'title', 'instructions', 'ingredients']
-
-class RecipeIngredientSerializer(serializers.ModelSerializer):
-    ingredient = IngredientSerializer()
-
-    class Meta:
-        model = RecipeIngredient
-        fields = ['id', 'recipe', 'ingredient']
