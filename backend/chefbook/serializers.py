@@ -18,14 +18,17 @@ class IngredientSerializer(serializers.ModelSerializer):
         fields = ['id',  'name', 'category']
 
 class PantryIngredientSerializer(serializers.ModelSerializer):
-    ingredient = IngredientSerializer()
+    ingredient = serializers.SlugRelatedField(
+        queryset = Ingredient.objects.all(),
+        slug_field = 'name'
+    )
 
     class Meta:
         model = PantryIngredient
         fields = ['id', 'ingredient']
 
 class PantrySerializer(serializers.ModelSerializer):
-    ingredients = PantryIngredientSerializer(many=True)
+    
 
     class Meta:
         model = Pantry

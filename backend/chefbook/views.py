@@ -33,13 +33,19 @@ class PantryViewSet(viewsets.ModelViewSet):
 class PantryIngredientViewSet(viewsets.ModelViewSet):
     queryset = PantryIngredient.objects.all()
     serializer_class = PantryIngredientSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return PantryIngredient.objects.filter(pantry__user= self.request.user)
 
     def perform_create(self, serializer):
         pantry = serializer.validated_data['pantry']
         ingredient = serializer.validated_data['ingredient']
 
-        if Pantry.objects.filter(pantry=pantry, ingredient=ingredient).exists():
+        if PantryIngredient.objects.filter(pantry=pantry, ingredient=ingredient).exists():
             raise ValidationError('This ingredient is already in your pantry')
         serializer.save()
+
+    
 
 

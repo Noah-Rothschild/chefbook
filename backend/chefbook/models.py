@@ -8,13 +8,11 @@ class Ingredient(models.Model):
 
 class Pantry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    ingredient = models.ManyToManyField(Ingredient, through='PantryIngredient')
+    ingredients = models.ManyToManyField(Ingredient, through='PantryIngredient')
     
-
 class PantryIngredient(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     pantry = models.ForeignKey(Pantry, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     class Meta:
-        unique_together = ("user", "ingredient")
+        unique_together = ("pantry", "ingredient")
 
