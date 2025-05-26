@@ -36,6 +36,7 @@ function Pantry() {
   const getPantryId = async () => {
     try {
       const res = await api.get("api/pantry/");
+      console.log(res.data);
       const pantryId = res.data[0].id;
       setPantryId(pantryId);
     } catch (err) {

@@ -48,6 +48,7 @@ function App() {
         />
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<RegisterAndLogout />} />
       </Routes>
     </BrowserRouter>
