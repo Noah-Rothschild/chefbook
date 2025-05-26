@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import api from "../api";
+import "../styles/Pantry.css";
 
 function Pantry() {
   const [pantry, setPantry] = useState([]);
@@ -19,6 +20,7 @@ function Pantry() {
       }
     };
     fetchPantry();
+    console.log(pantry);
   }, []);
 
   useEffect(() => {
@@ -78,7 +80,7 @@ function Pantry() {
 
   const handleDelete = async (id) => {
     try {
-      await api.delete("/api/pantry-ingredients/${id}/");
+      await api.delete(`/api/pantry-ingredients/${id}/`);
       setPantry(pantry.filter((item) => item.id !== id));
     } catch (err) {
       console.log(err);
@@ -113,16 +115,13 @@ function Pantry() {
             if (!ingredient) return null;
 
             return (
-              <li
-                key={item.id}
-                className="flex justify-between items-center border-b py-2"
-              >
-                <span>{ingredient.name}</span>
+              <li key={item.id} className="ingredientList">
+                <span>{ingredient} </span>
                 <button
                   onClick={() => handleDelete(item.id)}
-                  className="text-red-500 hover:text-red-700"
+                  className="deleteButton"
                 >
-                  Remove
+                  delete
                 </button>
               </li>
             );
