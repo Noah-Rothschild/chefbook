@@ -52,15 +52,22 @@ class RecipeSuggestionView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self,request):
-        ingredients = request.data.get("ingredients", [])
+        ingredients = request.data.get("ingredients", "")
         if not ingredients:
             return Response({"error": "No Ingredients provided"}, status=400)
         
-        query = ",".join(ingredients)
+        query = ingredients
         api_key = settings.SPOONACULAR_API_KEY
-        url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients={query}&number=5&ranking=1&ignorePantry=true&apiKey={api_key}"
 
-        response = requests.get(url)
+        params = {
+            "ingredients": query,
+            "number": 5,
+            "ranking": 1,
+            "ignorePantry": True,
+            "apiKey": api_key
+        }
+
+        response = requests.get("https://api.spoonacular.com/recipes/findByIngredients", params=params)
         if response.status_code == 200:
             return Response(response.json())
         else:

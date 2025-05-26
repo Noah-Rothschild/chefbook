@@ -6,8 +6,8 @@ router = DefaultRouter()
 router.register('ingredients', IngredientViewSet)
 router.register('pantry', PantryViewSet)
 router.register('pantry-ingredients', PantryIngredientViewSet)
-router.register('recipe-suggestion', RecipeSuggestionView)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('recipe-suggestion/', RecipeSuggestionView.as_view(), name='recipe-suggestion'),
 ]

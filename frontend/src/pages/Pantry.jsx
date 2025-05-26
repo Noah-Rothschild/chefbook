@@ -87,6 +87,22 @@ function Pantry() {
     }
   };
 
+  const fetchRecipes = async () => {
+    try {
+      const ingredientNames = pantry
+        .map((item) => item.ingredient.name || item.ingredient)
+        .join(",");
+
+      const response = await api.post("/api/recipe-suggestion/", {
+        ingredients: ingredientNames,
+      });
+
+      console.log("Suggested recipes:", response.data);
+    } catch (error) {
+      console.error("Error fetching recipes", error);
+    }
+  };
+
   return (
     <div className="page-wrapper">
       <h1 className="header">Your Pantry</h1>
@@ -130,6 +146,8 @@ function Pantry() {
           <li>No ingredients in your pantry yet!</li>
         )}
       </ul>
+
+      <button onClick={fetchRecipes}>Get Recipe Suggestions</button>
     </div>
   );
 }
