@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.conf import settings
+import requests
 from rest_framework.exceptions import ValidationError
 from django.contrib.auth.models import User
 from rest_framework import generics, viewsets
@@ -46,6 +48,22 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
             raise ValidationError('This ingredient is already in your pantry')
         serializer.save()
 
-    
+class RecipeSuggestionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self,request):
+        ingredients = request.data.get("ingredients", [])
+        if not ingredients:
+            return Response({"error": "No Ingredients provided"}, status=400)
+        
+        query = ",".join(ingredients)
+        api_key = settings.SPOONACULAR_API_KEY
+        url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients={query}&number=5&ranking=1&ignorePantry=true&apiKey={api_key}"
+
+        response = requests.get(url)
+        if response.status_code == 200:
+            return Response(response.json())
+        else:
+            return Response({"error": "Failed to retrieve recipes"}, status=500)
 
 
