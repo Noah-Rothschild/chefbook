@@ -56,11 +56,10 @@ class RecipeSuggestionView(APIView):
         if not ingredients:
             return Response({"error": "No Ingredients provided"}, status=400)
         
-        query = ingredients
         api_key = settings.SPOONACULAR_API_KEY
 
         params = {
-            "ingredients": query,
+            "ingredients": ingredients,
             "number": 5,
             "ranking": 1,
             "ignorePantry": True,

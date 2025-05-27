@@ -104,50 +104,57 @@ function Pantry() {
   };
 
   return (
-    <div className="page-wrapper">
-      <h1 className="header">Your Pantry</h1>
-      <input
-        type="text"
-        value={query}
-        onChange={handleInputChange}
-        placeholder="Type to add ingredient..."
+    <div>
+      <img
+        src="/logo.png"
+        alt="Chefbook Logo"
+        style={{ width: "120px", marginBottom: "20px" }}
       />
-      <ul>
-        {filtered.map((item) => (
-          <li
-            key={item.id}
-            onClick={() => handleSelect(item)}
-            style={{ cursor: "pointer" }}
-          >
-            {item.name}
-          </li>
-        ))}
-      </ul>
-      <ul>
-        {pantry.length > 0 ? (
-          pantry.map((item) => {
-            const ingredient = item?.ingredient;
+      <div className="page-wrapper">
+        <h1 className="header">Your Pantry</h1>
+        <input
+          type="text"
+          value={query}
+          onChange={handleInputChange}
+          placeholder="Type to add ingredient..."
+        />
+        <ul>
+          {filtered.map((item) => (
+            <li
+              key={item.id}
+              onClick={() => handleSelect(item)}
+              style={{ cursor: "pointer" }}
+            >
+              {item.name}
+            </li>
+          ))}
+        </ul>
+        <ul>
+          {pantry.length > 0 ? (
+            pantry.map((item) => {
+              const ingredient = item?.ingredient;
 
-            if (!ingredient) return null;
+              if (!ingredient) return null;
 
-            return (
-              <li key={item.id} className="ingredientList">
-                <span>{ingredient} </span>
-                <button
-                  onClick={() => handleDelete(item.id)}
-                  className="deleteButton"
-                >
-                  delete
-                </button>
-              </li>
-            );
-          })
-        ) : (
-          <li>No ingredients in your pantry yet!</li>
-        )}
-      </ul>
+              return (
+                <li key={item.id} className="ingredientList">
+                  <span>{ingredient} </span>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="deleteButton"
+                  >
+                    delete
+                  </button>
+                </li>
+              );
+            })
+          ) : (
+            <li>No ingredients in your pantry yet!</li>
+          )}
+        </ul>
 
-      <button onClick={fetchRecipes}>Get Recipe Suggestions</button>
+        <button onClick={fetchRecipes}>Get Recipe Suggestions</button>
+      </div>
     </div>
   );
 }
