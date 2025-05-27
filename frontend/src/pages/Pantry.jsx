@@ -153,7 +153,7 @@ function Pantry() {
           )}
         </ul>
 
-        <button onClick={fetchRecipes}>Get Recipe Suggestions</button>
+        <button onClick={fetchRecipes} className="suggestButton">Get Recipe Suggestions</button>
       </div>
     </div>
   );
