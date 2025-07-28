@@ -10,7 +10,6 @@ from .serializers import UserSerializer, PantrySerializer, IngredientSerializer,
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Ingredient, Pantry, PantryIngredient
 
-# Create your views here.
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -61,7 +60,7 @@ class RecipeSuggestionView(APIView):
         params = {
             "ingredients": ingredients,
             "number": 5,
-            "ranking": 1,
+            "ranking": 2,
             "ignorePantry": True,
             "apiKey": api_key
         }
