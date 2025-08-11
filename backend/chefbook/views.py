@@ -60,7 +60,7 @@ class RecipeSuggestionView(APIView):
         params = {
             "ingredients": ingredients,
             "number": 5,
-            "ranking": 2,
+            "ranking": 1,
             "ignorePantry": True,
             "apiKey": api_key
         }

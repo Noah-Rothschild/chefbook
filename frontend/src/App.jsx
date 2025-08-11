@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Pantry from "./pages/Pantry";
-import RecipeDetail from "./pages/RecipeDetail";
+import RecipeDetail from "./pages/recipedetail";
 import Recipes from "./pages/Recipes";
 import Home from "./pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -48,7 +48,7 @@ function App() {
         />
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/logout" element={<Logout />} />
+        <Route path ="/logout" element ={<Logout />} />
         <Route path="/register" element={<RegisterAndLogout />} />
       </Routes>
     </BrowserRouter>
