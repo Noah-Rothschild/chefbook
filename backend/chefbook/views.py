@@ -67,7 +67,18 @@ class RecipeSuggestionView(APIView):
 
         response = requests.get("https://api.spoonacular.com/recipes/findByIngredients", params=params)
         if response.status_code == 200:
-            return Response(response.json())
+            recipes = []
+        for r in response.json():
+            recipes.append({
+                "id": r["id"],
+                "title": r["title"],
+                "image": r["image"],
+                "usedCount": r["usedIngredientCount"],
+                "missingCount": r["missedIngredientCount"],
+                "usedIngredients": [i["name"] for i in r["usedIngredients"]],
+                "missingIngredients": [i["name"] for i in r["missedIngredients"]],
+            })
+            return Response(recipes)
         else:
             return Response({"error": "Failed to retrieve recipes"}, status=500)
 
