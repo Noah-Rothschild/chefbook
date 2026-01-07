@@ -104,44 +104,39 @@ function Pantry() {
     }
   };
 
-  
-
   return (
-    <div>
-      <img
-        src="/logo.png"
-        alt="Chefbook Logo"
-        style={{ width: "120px", marginBottom: "20px" }}
-      />
-      <div className="page-wrapper">
+    <div classname="chefbook-layout">
+      <div className="pantry-panel">
         <h1 className="header">Your Pantry</h1>
+
         <input
           type="text"
           value={query}
           onChange={handleInputChange}
           placeholder="Type to add ingredient..."
         />
+
         <ul>
           {filtered.map((item) => (
             <li
               key={item.id}
               onClick={() => handleSelect(item)}
-              style={{ cursor: "pointer" }}
+              className="suggestion-item"
             >
               {item.name}
             </li>
           ))}
         </ul>
+
         <ul>
           {pantry.length > 0 ? (
             pantry.map((item) => {
               const ingredient = item?.ingredient;
-
               if (!ingredient) return null;
 
               return (
                 <li key={item.id} className="ingredientList">
-                  <span>{ingredient} </span>
+                  <span>{ingredient}</span>
                   <button
                     onClick={() => handleDelete(item.id)}
                     className="deleteButton"
@@ -156,7 +151,27 @@ function Pantry() {
           )}
         </ul>
 
-        <button onClick={fetchRecipes} className="suggestButton">Get Recipe Suggestions</button>
+        <button onClick={fetchRecipes} className="suggestButton">
+          Get Recipe Suggestions
+        </button>
+      </div>
+
+      <div className="recipes-panel">
+        {recipes.length ? (
+          <div className="recipe-grid">
+            {recipes.map((recipe) => (
+              <div key={recipe.id} className="recipe-card">
+                <img src={recipe.image} alt={recipe.title} />
+                <h3>{recipe.title}</h3>
+                <p>Missing {recipe.missingCount} ingredients</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="empty-recipes">
+            Add ingredients and click “Get Recipe Suggestions”
+          </p>
+        )}
       </div>
     </div>
   );
