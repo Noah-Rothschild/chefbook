@@ -81,5 +81,3 @@ class RecipeSuggestionView(APIView):
             return Response(recipes)
         else:
             return Response({"error": "Failed to retrieve recipes"}, status=500)
-
-

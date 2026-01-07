@@ -9,6 +9,7 @@ function Pantry() {
   const [pantryId, setPantryId] = useState(null);
   const [query, setQuery] = useState("");
   const [filtered, setFiltered] = useState([]);
+  const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
     const fetchPantry = async () => {
@@ -102,6 +103,8 @@ function Pantry() {
       console.error("Error fetching recipes", error);
     }
   };
+
+  
 
   return (
     <div>
