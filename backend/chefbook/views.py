@@ -78,6 +78,7 @@ class RecipeSuggestionView(APIView):
                 "usedIngredients": [i["name"] for i in r["usedIngredients"]],
                 "missingIngredients": [i["name"] for i in r["missedIngredients"]],
             })
+            print("Backend sending:", len(recipes))
             return Response(recipes)
         else:
             return Response({"error": "Failed to retrieve recipes"}, status=500)

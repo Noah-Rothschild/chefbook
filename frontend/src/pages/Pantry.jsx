@@ -90,88 +90,95 @@ function Pantry() {
 
   const fetchRecipes = async () => {
     try {
-      const ingredientNames = pantry
-        .map((item) => item.ingredient.name || item.ingredient)
-        .join(",");
+      const ingredientNames = pantry.map(
+        (item) => item.ingredient.name || item.ingredient
+      );
 
       const response = await api.post("/api/recipe-suggestion/", {
         ingredients: ingredientNames,
       });
 
       console.log("Suggested recipes:", response.data);
+      setRecipes(response.data);
     } catch (error) {
       console.error("Error fetching recipes", error);
     }
   };
 
   return (
-    <div classname="chefbook-layout">
-      <div className="pantry-panel">
-        <h1 className="header">Your Pantry</h1>
+    <div className="page-container">
+      {/* LOGO */}
+      <img src="/logo.png" alt="Chefbook Logo" className="chefbook-logo" />
 
-        <input
-          type="text"
-          value={query}
-          onChange={handleInputChange}
-          placeholder="Type to add ingredient..."
-        />
+      <div classname="chefbook-layout">
+        <div className="pantry-panel">
+          <h1 className="header">Your Pantry</h1>
 
-        <ul>
-          {filtered.map((item) => (
-            <li
-              key={item.id}
-              onClick={() => handleSelect(item)}
-              className="suggestion-item"
-            >
-              {item.name}
-            </li>
-          ))}
-        </ul>
+          <input
+            type="text"
+            value={query}
+            onChange={handleInputChange}
+            placeholder="Type to add ingredient..."
+          />
 
-        <ul>
-          {pantry.length > 0 ? (
-            pantry.map((item) => {
-              const ingredient = item?.ingredient;
-              if (!ingredient) return null;
-
-              return (
-                <li key={item.id} className="ingredientList">
-                  <span>{ingredient}</span>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="deleteButton"
-                  >
-                    delete
-                  </button>
-                </li>
-              );
-            })
-          ) : (
-            <li>No ingredients in your pantry yet!</li>
-          )}
-        </ul>
-
-        <button onClick={fetchRecipes} className="suggestButton">
-          Get Recipe Suggestions
-        </button>
-      </div>
-
-      <div className="recipes-panel">
-        {recipes.length ? (
-          <div className="recipe-grid">
-            {recipes.map((recipe) => (
-              <div key={recipe.id} className="recipe-card">
-                <img src={recipe.image} alt={recipe.title} />
-                <h3>{recipe.title}</h3>
-                <p>Missing {recipe.missingCount} ingredients</p>
-              </div>
+          <ul>
+            {filtered.map((item) => (
+              <li
+                key={item.id}
+                onClick={() => handleSelect(item)}
+                className="suggestion-item"
+              >
+                {item.name}
+              </li>
             ))}
+          </ul>
+
+          <ul>
+            {pantry.length > 0 ? (
+              pantry.map((item) => {
+                const ingredient = item?.ingredient;
+                if (!ingredient) return null;
+
+                return (
+                  <li key={item.id} className="ingredientList">
+                    <span>{ingredient}</span>
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="deleteButton"
+                    >
+                      delete
+                    </button>
+                  </li>
+                );
+              })
+            ) : (
+              <li>No ingredients in your pantry yet!</li>
+            )}
+          </ul>
+          <div className="button-wrapper">
+            <button onClick={fetchRecipes} className="suggestButton">
+              Get Recipe Suggestions
+            </button>
           </div>
-        ) : (
-          <p className="empty-recipes">
-            Add ingredients and click “Get Recipe Suggestions”
-          </p>
-        )}
+        </div>
+
+        <div className="recipes-panel">
+          {recipes.length ? (
+            <div className="recipe-grid">
+              {recipes.map((recipe) => (
+                <div key={recipe.id} className="recipe-card">
+                  <img src={recipe.image} alt={recipe.title} />
+                  <h3>{recipe.title}</h3>
+                  <p>Missing {recipe.missingCount} ingredients</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="empty-recipes">
+              Add ingredients and click “Get Recipe Suggestions”
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
