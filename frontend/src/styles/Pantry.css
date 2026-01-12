@@ -38,6 +38,8 @@ input[type="text"] {
 }
 
 .pantry-panel {
+  flex: 1;
+  float: left;
   width: 35%;
   min-width: 280px;
   border-right: 1px solid #ddd;
@@ -45,8 +47,8 @@ input[type="text"] {
 }
 
 .recipes-panel {
-  flex: 1;
-  overflow-y: auto;
+  float: right;
+  width: 58%;
 }
 
 .recipe-grid {
