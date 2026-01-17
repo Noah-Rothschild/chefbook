@@ -94,6 +94,8 @@ function Pantry() {
         (item) => item.ingredient.name || item.ingredient
       );
 
+      setRecipes([]);
+
       const response = await api.post("/api/recipe-suggestion/", {
         ingredients: ingredientNames,
       });
@@ -108,14 +110,13 @@ function Pantry() {
   return (
     <div className="page-container">
       <div className="header-nav">
-      <img src="/logo.png" alt="Chefbook Logo" className="chefbook-logo" />
-      <nav>
-        <a href="#">Home</a>
-        <a href="#">AI Tool</a>
-        <a href="#">Saved Recipes</a>
-      </nav>
+        <img src="/logo.png" alt="Chefbook Logo" className="chefbook-logo" />
+        <nav>
+          <a href="#">Home -</a>
+          <a href="#"> AI Tool -</a>
+          <a href="#"> Saved Recipes</a>
+        </nav>
       </div>
-
 
       <div classname="chefbook-layout">
         <div className="pantry-panel">

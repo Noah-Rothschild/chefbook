@@ -20,6 +20,7 @@
   justify-content: space-between; /* Pushes the logo to the left, and the nav to the right */
   align-items: center;            /* Vertically centers items within the header */
   padding: 10px;
+  font-size: 1.5rem;
 }
 
 input[type="text"] {
@@ -59,7 +60,7 @@ input[type="text"] {
 .recipe-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5rem;
+  gap: 10rem;
 }
 
 .recipe-card {
