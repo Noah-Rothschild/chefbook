@@ -51,9 +51,12 @@ class RecipeSuggestionView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self,request):
-        ingredients = request.data.get("ingredients", "")
+        ingredients = request.data.get("ingredients", [])
         if not ingredients:
             return Response({"error": "No Ingredients provided"}, status=400)
+        
+        if isinstance(ingredients, list):
+            ingredients = ",".join(ingredients)
         
         api_key = settings.SPOONACULAR_API_KEY
 
