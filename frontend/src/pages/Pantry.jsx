@@ -109,14 +109,28 @@ function Pantry() {
 
   return (
     <div className="page-container">
-      <div className="header-nav">
-        <img src="/logo.png" alt="Chefbook Logo" className="chefbook-logo" />
-        <nav>
-          <a href="#">Home -</a>
-          <a href="#"> AI Tool -</a>
-          <a href="#"> Saved Recipes</a>
-        </nav>
-      </div>
+      <nav className="navbar">
+        <ul>
+          <li>
+            <a href="#">
+              <img
+                src="/logo.png"
+                alt="Chefbook Logo"
+                className="chefbook-logo"
+              />
+            </a>
+          </li>
+          <li>
+            <a href="#">Home</a>
+          </li>
+          <li>
+            <a href="#">AI Tool</a>
+          </li>
+          <li>
+            <a href="#">Saved Recipes</a>
+          </li>
+        </ul>
+      </nav>
 
       <div classname="chefbook-layout">
         <div className="pantry-panel">

@@ -15,14 +15,6 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.header-nav {
-  display: flex;
-  justify-content: space-between; /* Pushes the logo to the left, and the nav to the right */
-  align-items: center;            /* Vertically centers items within the header */
-  padding: 10px;
-  font-size: 1.5rem;
-}
-
 input[type="text"] {
   width: 95%;
   padding: 1rem;
@@ -91,14 +83,14 @@ input[type="text"] {
   margin: 1px;
 }
 
-ul {
+.pantry-panel ul {
   margin: 1px;
   padding: 0;
   list-style: none;
   background: white;
 }
 
-li {
+.pantry-panel li {
   padding: 20px;
   border-top: 1px solid #ccc;
   scroll-snap-align: start;
@@ -150,4 +142,29 @@ li {
   touch-action: manipulation;
   width: 15rem;
   will-change: transform, opacity;
+}
+
+.navbar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: white;
+}
+
+.navbar a {
+  display: block;
+  color: black;
+  text-align: center;
+  padding: 14px;
+  text-decoration: none;
+  font-size: 1.5rem;
+}
+
+.navbar a:hover {
+  background-color: #ddd;
+}
+
+.navbar li {
+  float: left;
 }
