@@ -1,5 +1,5 @@
 :root {
-  --cream: #f8f3ea;
+  --cream: #f9f4ea;
   --paper: #fffaf2;
   --line: #e6dcc6;
   --line-strong: #d6c8aa;
@@ -39,7 +39,7 @@ body {
 
 body {
   min-height: 100vh;
-  background: var(--cream) url("/backdrop.webp") center / cover fixed;
+  background: var(--cream);
   color: var(--olive-800);
   font-family: var(--font-body);
   font-size: 1.0625rem;
@@ -73,6 +73,41 @@ img {
   font-size: 1.5rem;
   line-height: 1.2;
   color: var(--terracotta);
+}
+
+/* Backdrop doodles: fixed to the viewport, painted above the page
+   background but below all content. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.backdrop img {
+  position: absolute;
+  height: auto;
+}
+
+/* Sized in vw so they stay inside the side margins next to the
+   1240px content column on laptop widths and up. */
+.backdrop-pizza {
+  width: clamp(60px, 6vw, 140px);
+  top: 96px;
+  right: 2vw;
+}
+
+.backdrop-icecream {
+  width: clamp(55px, 5vw, 115px);
+  top: 48%;
+  left: 2vw;
+}
+
+.backdrop-noodles {
+  width: clamp(60px, 6vw, 145px);
+  bottom: 4vh;
+  right: 2vw;
 }
 
 .muted {

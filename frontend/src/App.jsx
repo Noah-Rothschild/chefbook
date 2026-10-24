@@ -7,6 +7,7 @@ import Recipes from "./pages/Recipes";
 import Home from "./pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
+import Backdrop from "./components/Backdrop";
 
 function Logout() {
   localStorage.clear();
@@ -30,6 +31,7 @@ function Protected({ children }) {
 function App() {
   return (
     <BrowserRouter>
+      <Backdrop />
       <Routes>
         <Route path="/pantry" element={<Protected><Pantry /></Protected>} />
         <Route path="/recipes" element={<Protected><Recipes /></Protected>} />
