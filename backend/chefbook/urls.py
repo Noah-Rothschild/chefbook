@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter    
-from .views import IngredientViewSet, PantryViewSet, PantryIngredientViewSet, RecipeSuggestionView
+from .views import IngredientViewSet, PantryViewSet, PantryIngredientViewSet, RecipeSuggestionView, RecipeDetailView
 
 router = DefaultRouter()
 router.register('ingredients', IngredientViewSet)
@@ -10,4 +10,5 @@ router.register('pantry-ingredients', PantryIngredientViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('recipe-suggestion/', RecipeSuggestionView.as_view(), name='recipe-suggestion'),
+    path('recipes/<int:recipe_id>/', RecipeDetailView.as_view(), name='recipe-detail'),
 ]

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.utils.html import strip_tags
 from django.conf import settings
 import requests
 from rest_framework.exceptions import ValidationError
@@ -15,7 +15,7 @@ class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
-class IngredientViewSet(viewsets.ModelViewSet):
+class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all().order_by('name')
     serializer_class = IngredientSerializer
     permission_classes = [IsAuthenticated]
@@ -45,7 +45,7 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
 
         if PantryIngredient.objects.filter(pantry=pantry, ingredient=ingredient).exists():
             raise ValidationError('This ingredient is already in your pantry')
-        serializer.save()
+        serializer.save(pantry=pantry)
 
 class RecipeSuggestionView(APIView):
     permission_classes = [IsAuthenticated]
@@ -68,7 +68,10 @@ class RecipeSuggestionView(APIView):
             "apiKey": api_key
         }
 
-        response = requests.get("https://api.spoonacular.com/recipes/findByIngredients", params=params)
+        try:
+            response = requests.get("https://api.spoonacular.com/recipes/findByIngredients", params=params, timeout=10)
+        except requests.RequestException:
+            return Response({"error": "Could not reach the recipe service"}, status=502)
         if response.status_code == 200:
             recipes = []
             for r in response.json():
@@ -81,8 +84,59 @@ class RecipeSuggestionView(APIView):
                     "usedIngredients": [i["name"] for i in r["usedIngredients"]],
                     "missingIngredients": [i["name"] for i in r["missedIngredients"]],
                 })
-            print("Backend sending:", len(recipes))
             return Response(recipes)
         else:
             return Response({"error": "Failed to retrieve recipes"}, status=500)
-        
+
+
+class RecipeDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, recipe_id):
+        params = {"includeNutrition": False, "apiKey": settings.SPOONACULAR_API_KEY}
+        try:
+            response = requests.get(f"https://api.spoonacular.com/recipes/{recipe_id}/information", params=params, timeout=10)
+        except requests.RequestException:
+            return Response({"error": "Could not reach the recipe service"}, status=502)
+        if response.status_code == 404:
+            return Response({"error": "Recipe not found"}, status=404)
+        if response.status_code != 200:
+            return Response({"error": "Failed to retrieve recipe"}, status=500)
+
+        r = response.json()
+        pantry_names = [
+            name.lower() for name in
+            PantryIngredient.objects.filter(pantry__user=request.user).values_list("ingredient__name", flat=True)
+        ]
+
+        def in_pantry(name):
+            name = name.lower()
+            return any(p in name or name in p for p in pantry_names)
+
+        ingredients = []
+        for i in r.get("extendedIngredients", []):
+            ingredients.append({
+                "id": i.get("id"),
+                "name": i.get("name", ""),
+                "original": i.get("original", ""),
+                "inPantry": in_pantry(i.get("name", "")),
+            })
+
+        steps = []
+        for group in r.get("analyzedInstructions", []):
+            for step in group.get("steps", []):
+                steps.append(step["step"])
+
+        return Response({
+            "id": r["id"],
+            "title": r["title"],
+            "image": r.get("image"),
+            "servings": r.get("servings"),
+            "readyInMinutes": r.get("readyInMinutes"),
+            "sourceName": r.get("sourceName"),
+            "sourceUrl": r.get("sourceUrl"),
+            "summary": strip_tags(r.get("summary", "")),
+            "diets": r.get("diets", []),
+            "ingredients": ingredients,
+            "steps": steps,
+        })

@@ -26,6 +26,7 @@ class PantryIngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = PantryIngredient
         fields = ['id', 'pantry', 'ingredient']
+        extra_kwargs = {'pantry': {'read_only': True}}
 
 class PantrySerializer(serializers.ModelSerializer):
     

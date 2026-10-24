@@ -47,7 +47,7 @@ function ProtectedRoute({ children }) {
   };
 
   if (isAuthorized == null) {
-    return <div>Loading...</div>;
+    return <div className="loading-screen hand">Warming up the kitchen…</div>;
   }
 
   return isAuthorized ? children : <Navigate to="/login" />;
