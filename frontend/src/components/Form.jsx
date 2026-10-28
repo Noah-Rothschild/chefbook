@@ -34,7 +34,16 @@ function Form({ route, method, onClose }) {
       if (isLogin) {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-        navigate("/pantry");
+        // The pantry turns this page over, so tell it what the page looked like.
+        navigate("/pantry", {
+          state: {
+            fromLogin: {
+              username,
+              passwordLength: password.length,
+              registered: Boolean(state?.registered),
+            },
+          },
+        });
       } else {
         navigate("/login", { state: { registered: true } });
       }

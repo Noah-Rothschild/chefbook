@@ -4,8 +4,20 @@ import api from "../api";
 import { REFRESH_TOKEN, ACCESS_TOKEN } from "../constants";
 import { useState, useEffect } from "react";
 
+function hasValidToken() {
+  const token = localStorage.getItem(ACCESS_TOKEN);
+  if (!token) return false;
+  try {
+    return jwtDecode(token).exp > Date.now() / 1000;
+  } catch {
+    return false;
+  }
+}
+
 function ProtectedRoute({ children }) {
-  const [isAuthorized, setIsAuthorized] = useState(null);
+  // Decide straight away when the token is still valid, so the page renders
+  // on the first frame (no "warming up" flash, e.g. right after logging in).
+  const [isAuthorized, setIsAuthorized] = useState(() => (hasValidToken() ? true : null));
 
   useEffect(() => {
     auth().catch(() => setIsAuthorized(false));

@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-import { useMatch } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { useLocation, useMatch, useNavigate } from "react-router-dom";
 import Book, { Page } from "../components/book/Book";
 import PantryPage from "../components/book/PantryPage";
 import SuggestionsPage from "../components/book/SuggestionsPage";
 import RecipeInfoPage from "../components/book/RecipeInfoPage";
 import RecipeMethodPage from "../components/book/RecipeMethodPage";
+import LoginIntro from "../components/book/LoginIntro";
 import usePantry from "../hooks/usePantry";
 import useRecipe from "../hooks/useRecipe";
 
@@ -25,6 +26,19 @@ function Cookbook() {
 
   const [shown, setShown] = useState(spread);
   const [flip, setFlip] = useState(null);
+
+  // Arriving straight from the login page: turn that page over first.
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [intro, setIntro] = useState(() =>
+    location.state?.fromLogin && canAnimate() ? location.state.fromLogin : null
+  );
+  const endIntro = useCallback(() => {
+    setIntro(null);
+    // forget it, so a refresh doesn't play it again
+    navigate(location.pathname, { replace: true, state: null });
+  }, [navigate, location.pathname]);
+  const introOverlay = intro && <LoginIntro login={intro} pantry={pantry} onDone={endIntro} />;
 
   if (spread !== shown) {
     setShown(spread);
@@ -63,7 +77,12 @@ function Cookbook() {
   };
 
   if (!flip) {
-    return <Book left={pages[shown].left} right={pages[shown].right} />;
+    return (
+      <>
+        <Book left={pages[shown].left} right={pages[shown].right} />
+        {introOverlay}
+      </>
+    );
   }
 
   const from = pages[flip.from];
