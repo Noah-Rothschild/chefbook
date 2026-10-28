@@ -1,50 +1,36 @@
-import { Link } from "react-router-dom";
-import { ACCESS_TOKEN } from "../constants";
-import "../styles/Home.css";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import CoverBook, { CoverFront } from "../components/CoverBook";
+import { prefersReducedMotion } from "../motion";
+import Form from "../components/Form";
+
+// What's written on the first page while the cover swings open; it matches
+// the page we're heading to, so arriving there changes nothing on screen.
+function FirstPage({ target }) {
+  if (target === "/login") return <Form route="/chefbook/token/" method="login" />;
+  if (target === "/register") return <Form route="/chefbook/user/register/" method="register" />;
+  if (target === "/pantry") return <p className="first-page-note">turning to your pantry…</p>;
+  return null;
+}
 
 function Home() {
-  const loggedIn = Boolean(localStorage.getItem(ACCESS_TOKEN));
+  const navigate = useNavigate();
+  const [target, setTarget] = useState(null);
+
+  const open = (e, to) => {
+    e.preventDefault();
+    if (target) return;
+    if (prefersReducedMotion()) navigate(to);
+    else setTarget(to);
+  };
 
   return (
-    <div className="home">
-      <section className="home-card card">
-        <img src="/logo-olive.png" alt="Chefbook" className="home-logo" />
-        <p className="hand home-tagline">cook with what you've got</p>
-        <p className="home-text">
-          Keep track of what's in your pantry and let Chefbook suggest recipes you can
-          make tonight, no extra shopping trip needed.
-        </p>
-
-        <div className="home-actions">
-          {loggedIn ? (
-            <Link to="/pantry" className="btn">
-              Go to my pantry
-            </Link>
-          ) : (
-            <>
-              <Link to="/register" className="btn">
-                Get started
-              </Link>
-              <Link to="/login" className="btn btn-outline">
-                Log in
-              </Link>
-            </>
-          )}
-        </div>
-
-        <ol className="home-steps">
-          <li>
-            <span>1</span> Stock your pantry
-          </li>
-          <li>
-            <span>2</span> Find recipes
-          </li>
-          <li>
-            <span>3</span> Get cooking
-          </li>
-        </ol>
-      </section>
-    </div>
+    <CoverBook
+      state={target ? "opening" : "closed"}
+      front={<CoverFront onOpen={open} />}
+      page={<FirstPage target={target} />}
+      onSwingEnd={() => navigate(target)}
+    />
   );
 }
 

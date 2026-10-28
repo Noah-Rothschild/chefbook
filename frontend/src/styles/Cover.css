@@ -1,0 +1,306 @@
+.home {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2.5rem 1rem 4rem;
+  /* on narrow screens the opened cover swings off the left edge */
+  overflow-x: clip;
+}
+
+/* ---------- The closed book ---------- */
+
+.closed-book {
+  --gold: #e7cf8f;
+  --open-duration: 1000ms;
+
+  position: relative;
+  /* fit the window's width and height; 3:4 like a real cookbook */
+  width: min(88vw, 430px, calc((100vh - 7rem) * 0.75));
+  min-width: 260px;
+  aspect-ratio: 3 / 4;
+  perspective: 2200px;
+  /* cover contents scale with the book (cqi = 1% of its width) */
+  container-type: inline-size;
+}
+
+/* ribbon bookmark hanging out of the pages */
+.ribbon {
+  position: absolute;
+  left: 64%;
+  bottom: -46px;
+  width: 20px;
+  height: 90px;
+  background: linear-gradient(to right, #a85d3e, var(--terracotta) 45%, #a85d3e);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+}
+
+/* the first page, revealed when the cover swings open */
+.first-page {
+  position: absolute;
+  inset: 6px 10px 6px 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8cqi 8cqi 6cqi 10cqi;
+  overflow-y: auto;
+  border-radius: 4px 10px 10px 4px;
+  background-color: #fffbf3;
+  background-image:
+    linear-gradient(to right, rgba(47, 58, 28, 0.12), transparent 40px),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 31px,
+      rgba(111, 127, 74, 0.12) 31px,
+      rgba(111, 127, 74, 0.12) 32px
+    );
+  background-attachment: local;
+  /* edges of the pages under the cover */
+  box-shadow: 3px 3px 0 #efe6d3, 6px 6px 0 #e3d8c0, 9px 9px 0 #efe6d3, 12px 12px 0 #e3d8c0;
+  color: var(--olive-800);
+}
+
+.first-page-note {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: 7cqi;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* ---------- The cover ---------- */
+
+.cover {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+
+.cover-front,
+.cover-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px 16px 16px 6px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.cover-front {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6cqi;
+  padding: 9cqi 8cqi 9cqi 13cqi;
+  background:
+    /* spine and its hinge groove */
+    linear-gradient(
+      to right,
+      #33401f 0,
+      #46552b 18px,
+      #3a4723 30px,
+      rgba(0, 0, 0, 0.25) 32px,
+      rgba(255, 255, 255, 0.06) 34px,
+      transparent 38px
+    ),
+    /* soft light across the leather */
+    radial-gradient(120% 90% at 30% 20%, rgba(255, 255, 255, 0.1), transparent 60%),
+    linear-gradient(160deg, #5b6c3c, var(--olive-700) 50%, #3e4a26);
+  box-shadow:
+    0 30px 50px rgba(47, 58, 28, 0.3),
+    0 8px 16px rgba(47, 58, 28, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset -6px 0 12px rgba(0, 0, 0, 0.15);
+  color: var(--gold);
+}
+
+.cover-stitch {
+  position: absolute;
+  inset: 16px 16px 16px 50px;
+  border: 2px dashed rgba(231, 207, 143, 0.4);
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+/* brass corner protectors */
+.cover-corner {
+  position: absolute;
+  right: 0;
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #e2c57d, #b9934a);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+.cover-corner-top {
+  top: 0;
+  border-top-right-radius: 16px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+.cover-corner-bottom {
+  bottom: 0;
+  border-bottom-right-radius: 16px;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+
+.cover-title {
+  margin: 0;
+}
+
+.cover-title img {
+  width: 60cqi;
+  /* pressed into the leather */
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.45)) drop-shadow(0 -1px 0 rgba(255, 255, 255, 0.12));
+}
+
+/* paper label stuck on the cover */
+.cover-label {
+  position: relative;
+  max-width: 78cqi;
+  padding: 2.6cqi 4.5cqi 3cqi;
+  background: #fffbf3;
+  border-radius: 3px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  transform: rotate(-2deg);
+}
+
+.cover-tagline {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: 7.4cqi;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  color: var(--terracotta);
+}
+
+.cover-steps {
+  margin: 1.2cqi 0 0;
+  font-family: "Kalam", var(--font-hand);
+  font-size: 3.5cqi;
+  color: var(--olive-800);
+}
+
+.cover-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.2cqi;
+}
+
+.cover-button {
+  padding: 0.25rem 1.6rem 0.4rem;
+  border: 2px solid var(--gold);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  background: var(--gold);
+  color: var(--olive-900);
+  font-family: var(--font-hand);
+  font-size: 6.6cqi;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.cover-button:hover {
+  background: #f1dca5;
+  transform: rotate(-1.5deg) scale(1.03);
+}
+
+.cover-link {
+  font-family: "Kalam", var(--font-hand);
+  font-size: 3.9cqi;
+  color: var(--gold);
+  text-decoration-color: rgba(231, 207, 143, 0.5);
+  text-underline-offset: 4px;
+}
+
+.cover-link:hover {
+  text-decoration-color: var(--gold);
+}
+
+/* inside of the cover: patterned endpaper */
+.cover-back {
+  transform: rotateY(180deg);
+  border-radius: 16px 6px 6px 16px;
+  background:
+    radial-gradient(circle, rgba(111, 127, 74, 0.35) 1.6px, transparent 1.8px) 0 0 / 18px 18px,
+    var(--sage-soft);
+  box-shadow: inset 0 0 0 10px var(--olive-700);
+}
+
+/* ---------- Opening and closing ---------- */
+/* "open" is exactly the last frame of "opening" (and the first of
+   "closing"), so the login/register screens pick up where the start
+   screen's swing ends. */
+
+.closed-book {
+  --swing: cubic-bezier(0.5, 0, 0.3, 1);
+  --open-angle: -160deg;
+}
+
+.is-opening .cover {
+  animation: cover-open var(--open-duration) var(--swing) forwards;
+}
+
+.is-open .cover {
+  transform: rotateY(var(--open-angle));
+}
+
+.is-closing .cover {
+  animation: cover-close var(--open-duration) var(--swing) forwards;
+}
+
+@keyframes cover-open {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(var(--open-angle));
+  }
+}
+
+@keyframes cover-close {
+  from {
+    transform: rotateY(var(--open-angle));
+  }
+  to {
+    transform: rotateY(0deg);
+  }
+}
+
+/* Where there's room, slide the book right as it opens so the open
+   spread (cover on the left, first page on the right) ends up centred. */
+@media (min-width: 900px) {
+  .closed-book.is-opening {
+    animation: book-to-centre var(--open-duration) var(--swing) forwards;
+  }
+
+  .closed-book.is-open {
+    transform: translateX(50%);
+  }
+
+  .closed-book.is-closing {
+    animation: book-from-centre var(--open-duration) var(--swing) forwards;
+  }
+}
+
+@keyframes book-to-centre {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(50%);
+  }
+}
+
+@keyframes book-from-centre {
+  from {
+    transform: translateX(50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
