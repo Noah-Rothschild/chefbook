@@ -1,8 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Pantry from "./pages/Pantry";
-import RecipeDetail from "./pages/RecipeDetail";
+import Cookbook from "./pages/Cookbook";
 import Recipes from "./pages/Recipes";
 import Home from "./pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -33,9 +32,12 @@ function App() {
     <BrowserRouter>
       <Backdrop />
       <Routes>
-        <Route path="/pantry" element={<Protected><Pantry /></Protected>} />
+        {/* One Cookbook stays mounted across both paths so the page can turn */}
+        <Route element={<Protected><Cookbook /></Protected>}>
+          <Route path="/pantry" element={null} />
+          <Route path="/recipes/:id" element={null} />
+        </Route>
         <Route path="/recipes" element={<Protected><Recipes /></Protected>} />
-        <Route path="/recipes/:id" element={<Protected><RecipeDetail /></Protected>} />
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />

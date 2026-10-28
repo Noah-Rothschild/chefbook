@@ -1,11 +1,7 @@
-import Form from "../components/Form";
+import AuthPage from "./AuthPage";
 
 function Login() {
-  return (
-    <div>
-      <Form route="/chefbook/token/" method="login" />
-    </div>
-  );
+  return <AuthPage route="/chefbook/token/" method="login" />;
 }
 
 export default Login;

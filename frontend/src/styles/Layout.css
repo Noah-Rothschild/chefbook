@@ -105,3 +105,8 @@
     margin-left: auto;
   }
 }
+
+/* hidden while the login page turns over to the pantry (see LoginIntro) */
+body.intro-hidden .layout {
+  opacity: 0;
+}

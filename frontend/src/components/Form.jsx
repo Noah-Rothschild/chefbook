@@ -1,6 +1,6 @@
 import { useState } from "react";
 import api from "../api";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/Form.css";
 
@@ -12,15 +12,17 @@ function errorMessage(error, isLogin) {
   return typeof first === "string" ? first : "Something went wrong. Please try again.";
 }
 
-function Form({ route, method }) {
+// The login / register form, written on the first page of the cookbook.
+// `onClose` swings the cover shut again.
+function Form({ route, method, onClose }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { state } = useLocation();
 
   const isLogin = method === "login";
-  const name = isLogin ? "Log in" : "Create account";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,9 +34,18 @@ function Form({ route, method }) {
       if (isLogin) {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-        navigate("/pantry");
+        // The pantry turns this page over, so tell it what the page looked like.
+        navigate("/pantry", {
+          state: {
+            fromLogin: {
+              username,
+              passwordLength: password.length,
+              registered: Boolean(state?.registered),
+            },
+          },
+        });
       } else {
-        navigate("/login");
+        navigate("/login", { state: { registered: true } });
       }
     } catch (err) {
       setError(errorMessage(err, isLogin));
@@ -44,59 +55,62 @@ function Form({ route, method }) {
   };
 
   return (
-    <div className="form-wrapper">
-      <form onSubmit={handleSubmit} className="form-container card">
-        <Link to="/" aria-label="Chefbook home">
-          <img src="/logo-olive.png" alt="Chefbook" className="form-logo" />
-        </Link>
-        <h1 className="form-title">{name}</h1>
-        <p className="hand form-subtitle">
-          {isLogin ? "welcome back to the kitchen" : "pull up a chair"}
-        </p>
+    <form onSubmit={handleSubmit} className="page-form">
+      <h2 className="page-form-title">{isLogin ? "Welcome back" : "This cookbook belongs to…"}</h2>
+      <p className="page-form-subtitle">
+        {isLogin ? "log in to open your pantry" : "pick a name and a password to start"}
+      </p>
 
-        <label className="form-label">
-          Username
-          <input
-            className="input"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            autoComplete="username"
-            required
-          />
-        </label>
+      {isLogin && state?.registered && (
+        <p className="page-form-note">All set! Now log in with your new account.</p>
+      )}
 
-        <label className="form-label">
-          Password
-          <input
-            className="input"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete={isLogin ? "current-password" : "new-password"}
-            required
-          />
-        </label>
+      <label className="page-form-label">
+        {isLogin ? "username" : "your name"}
+        <input
+          className="ink-input"
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          autoComplete="username"
+          required
+        />
+      </label>
 
-        {error && <p className="notice">{error}</p>}
+      <label className="page-form-label">
+        password
+        <input
+          className="ink-input"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoComplete={isLogin ? "current-password" : "new-password"}
+          required
+        />
+      </label>
 
-        <button className="btn form-button" type="submit" disabled={loading}>
-          {loading ? "One moment…" : name}
-        </button>
+      {error && <p className="ink-error">{error}</p>}
 
-        <p className="form-footer">
-          {isLogin ? (
-            <>
-              New here? <Link to="/register">Create an account</Link>
-            </>
-          ) : (
-            <>
-              Already have an account? <Link to="/login">Log in</Link>
-            </>
-          )}
-        </p>
-      </form>
-    </div>
+      <button className="ink-button page-form-button" type="submit" disabled={loading}>
+        {loading ? "one moment…" : isLogin ? "log in →" : "start my cookbook →"}
+      </button>
+
+      <p className="page-form-switch">
+        {isLogin ? (
+          <>
+            new here? <Link to="/register">start a cookbook</Link>
+          </>
+        ) : (
+          <>
+            already have one? <Link to="/login">log in</Link>
+          </>
+        )}
+      </p>
+
+      <button type="button" className="page-form-close" onClick={onClose}>
+        ← close the book
+      </button>
+    </form>
   );
 }
 

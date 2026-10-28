@@ -214,3 +214,68 @@ img {
   display: grid;
   place-items: center;
 }
+
+/* Handwritten form controls, shared by the cookbook and the cover pages */
+.ink-error {
+  margin: 0.5rem 0;
+  color: #a1462a;
+}
+
+.ink-error::before {
+  content: "! ";
+  font-weight: 700;
+}
+
+/* written onto a line rather than typed into a box */
+.ink-input {
+  width: 100%;
+  padding: 0.2rem 0.1rem;
+  border: none;
+  border-bottom: 2px solid var(--olive-500);
+  background: transparent;
+  font-family: "Kalam", var(--font-hand);
+  font-size: 1.2rem;
+  color: var(--olive-900);
+}
+
+.ink-input::placeholder {
+  color: var(--muted);
+  font-weight: 300;
+}
+
+.ink-input:focus {
+  outline: none;
+  border-bottom-color: var(--terracotta);
+}
+
+.ink-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 1.1rem 0.3rem;
+  border: 2px solid var(--olive-700);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; /* wobbly, hand-drawn */
+  background: var(--olive-700);
+  color: var(--paper);
+  font-family: var(--font-hand);
+  font-size: 1.55rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.ink-button:hover {
+  background: var(--olive-800);
+  transform: rotate(-1deg);
+}
+
+.ink-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.ink-button small {
+  font-size: 1rem;
+  font-weight: 500;
+}
