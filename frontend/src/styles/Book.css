@@ -1,0 +1,718 @@
+/* ---------- The book: cover, pages, spine ---------- */
+
+.book {
+  --line: 32px;
+  --ink: var(--olive-800);
+  --page: #fffbf3;
+  --rule: rgba(111, 127, 74, 0.12);
+  --flip-duration: 900ms;
+
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #56663a, var(--olive-700) 55%, #414e28);
+  box-shadow: 0 24px 50px rgba(47, 58, 28, 0.25), inset 0 0 0 2px rgba(255, 255, 255, 0.06);
+  font-family: "Kalam", var(--font-hand);
+  font-size: 1.12rem;
+  color: var(--ink);
+}
+
+.book-pages {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: minmax(0, 1fr);
+  height: clamp(540px, calc(100vh - 210px), 860px);
+  perspective: 2400px;
+}
+
+/* the fold in the middle */
+.book-pages::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-1px);
+  background: rgba(47, 58, 28, 0.18);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.book-slot {
+  min-width: 0;
+  height: 100%;
+}
+
+.page {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--page);
+}
+
+/* shading towards the spine + the edges of the pages underneath */
+.page-left {
+  border-radius: 10px 0 0 10px;
+  background-image: linear-gradient(to left, rgba(47, 58, 28, 0.13), transparent 56px);
+  box-shadow: -2px 2px 0 #efe6d3, -4px 4px 0 #e3d8c0, -6px 6px 0 #efe6d3;
+}
+
+.page-right {
+  border-radius: 0 10px 10px 0;
+  background-image: linear-gradient(to right, rgba(47, 58, 28, 0.13), transparent 56px);
+  box-shadow: 2px 2px 0 #efe6d3, 4px 4px 0 #e3d8c0, 6px 6px 0 #efe6d3;
+}
+
+.page-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 2rem 2.6rem 1rem;
+  line-height: var(--line);
+  /* ruled lines that scroll with the writing */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--line) - 1px),
+    var(--rule) calc(var(--line) - 1px),
+    var(--rule) var(--line)
+  );
+  background-attachment: local;
+  /* rules fall just under the baseline of 32px-tall lines of text */
+  background-position: 0 27px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.page-left .page-scroll {
+  padding-right: 3rem;
+}
+
+.page-right .page-scroll {
+  padding-left: 3rem;
+}
+
+.page-number {
+  padding: 0.25rem 0 0.6rem;
+  text-align: center;
+  font-family: var(--font-hand);
+  font-size: 1.15rem;
+  color: var(--muted);
+}
+
+/* ---------- Turning the page ---------- */
+
+.leaf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  z-index: 10;
+  transform-style: preserve-3d;
+  animation-duration: var(--flip-duration);
+  animation-timing-function: cubic-bezier(0.45, 0.05, 0.3, 1);
+  animation-fill-mode: forwards;
+}
+
+.leaf-forward {
+  left: 50%;
+  transform-origin: left center;
+  animation-name: flip-forward;
+}
+
+.leaf-backward {
+  left: 0;
+  transform-origin: right center;
+  animation-name: flip-backward;
+}
+
+.leaf-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.leaf-back {
+  transform: rotateY(180deg);
+}
+
+/* the page darkens as it lifts away from the light */
+.leaf-face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(47, 58, 28, 0.22);
+  opacity: 0;
+  animation: leaf-shade var(--flip-duration) ease-in-out;
+}
+
+.leaf-back::after {
+  animation-direction: reverse;
+}
+
+@keyframes flip-forward {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(-180deg);
+  }
+}
+
+@keyframes flip-backward {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(180deg);
+  }
+}
+
+@keyframes leaf-shade {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---------- Handwriting ---------- */
+
+.book h1,
+.book h2,
+.book h3 {
+  font-family: var(--font-hand);
+  font-variation-settings: normal;
+  font-weight: 700;
+  color: var(--olive-900);
+  line-height: var(--line);
+  margin: 0 0 0.25rem;
+}
+
+.book h1 {
+  font-size: 2.9rem;
+  line-height: calc(var(--line) * 2);
+}
+
+.book h2 {
+  font-size: 2.2rem;
+  line-height: calc(var(--line) * 1.5);
+  margin-top: 0.75rem;
+}
+
+.book h3 {
+  font-size: 1.5rem;
+}
+
+.page-header {
+  margin-bottom: 0.75rem;
+}
+
+.page-header h2 {
+  margin-top: 0;
+  font-size: 2.7rem;
+  line-height: calc(var(--line) * 2);
+}
+
+.page-subtitle {
+  margin: -0.4rem 0 0;
+  font-family: var(--font-hand);
+  font-size: 1.45rem;
+  color: var(--terracotta);
+}
+
+.pencil-note {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+.ink-error {
+  margin: 0.5rem 0;
+  color: #a1462a;
+}
+
+.ink-error::before {
+  content: "! ";
+  font-weight: 700;
+}
+
+/* written onto a line rather than typed into a box */
+.ink-input {
+  width: 100%;
+  padding: 0.2rem 0.1rem;
+  border: none;
+  border-bottom: 2px solid var(--olive-500);
+  background: transparent;
+  font-family: "Kalam", var(--font-hand);
+  font-size: 1.2rem;
+  color: var(--olive-900);
+}
+
+.ink-input::placeholder {
+  color: var(--muted);
+  font-weight: 300;
+}
+
+.ink-input:focus {
+  outline: none;
+  border-bottom-color: var(--terracotta);
+}
+
+.ink-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 1.1rem 0.3rem;
+  border: 2px solid var(--olive-700);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; /* wobbly, hand-drawn */
+  background: var(--olive-700);
+  color: var(--page);
+  font-family: var(--font-hand);
+  font-size: 1.55rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.ink-button:hover {
+  background: var(--olive-800);
+  transform: rotate(-1deg);
+}
+
+.ink-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.ink-button small {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.ink-link {
+  font-family: var(--font-hand);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--olive-700);
+  text-decoration-color: var(--terracotta);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* yellow sticky note */
+.sticky-note {
+  background: #fdf1bd;
+  box-shadow: 0 6px 14px rgba(75, 90, 47, 0.16);
+  color: var(--olive-900);
+}
+
+/* ---------- Pantry page ---------- */
+
+.pantry-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.pantry-search {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.pantry-search .sticky-note {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 1.5rem;
+  margin: 0;
+  padding: 0.4rem 0.4rem 0.6rem;
+  list-style: none;
+  transform: rotate(-1deg);
+}
+
+.pantry-search li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pantry-search li.is-active {
+  background: rgba(192, 113, 79, 0.15);
+}
+
+.pantry-search small {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.pantry-groups {
+  columns: 2;
+  column-gap: 2rem;
+  flex: 1;
+}
+
+.pantry-group {
+  break-inside: avoid;
+  margin-bottom: 0.75rem;
+}
+
+.pantry-group h3 {
+  display: inline-block;
+  font-size: 1.35rem;
+  color: var(--terracotta);
+  border-bottom: 2px solid rgba(192, 113, 79, 0.45);
+  line-height: 1.6;
+  margin-bottom: 0.15rem;
+}
+
+.pantry-group ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pantry-group li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.pantry-group li::before {
+  content: "–";
+  color: var(--olive-500);
+}
+
+.pantry-group li button {
+  margin-left: auto;
+  border: none;
+  background: none;
+  color: var(--terracotta);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.25;
+  transition: opacity 150ms ease;
+}
+
+.pantry-group li:hover button,
+.pantry-group li button:focus-visible {
+  opacity: 1;
+}
+
+.pantry-group li:hover span {
+  text-decoration: line-through;
+  text-decoration-color: var(--terracotta);
+}
+
+.pantry-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+}
+
+/* ---------- Suggestions page ---------- */
+
+.polaroid-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 1.75rem 1.5rem;
+  padding: 0.75rem 0.25rem 1rem;
+}
+
+.polaroid {
+  position: relative;
+  display: block;
+  padding: 0.6rem 0.6rem 0.7rem;
+  background: #fff;
+  box-shadow: 0 6px 16px rgba(75, 90, 47, 0.18);
+  color: inherit;
+  text-decoration: none;
+  line-height: 1.35;
+  transform: rotate(-1.6deg);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.polaroid-grid .polaroid:nth-child(even) {
+  transform: rotate(1.4deg);
+}
+
+.polaroid-grid .polaroid:nth-child(3n) {
+  transform: rotate(-0.6deg);
+}
+
+.polaroid-grid a.polaroid:hover {
+  transform: rotate(0deg) translateY(-4px) scale(1.02);
+  box-shadow: 0 14px 28px rgba(75, 90, 47, 0.22);
+}
+
+.polaroid img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--butter-soft);
+}
+
+.polaroid h3 {
+  margin: 0.5rem 0 0.15rem;
+  font-family: "Kalam", var(--font-hand);
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+
+.polaroid-counts,
+.polaroid-missing {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 300;
+}
+
+.polaroid-missing {
+  color: var(--terracotta);
+}
+
+.tape {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  width: 78px;
+  height: 22px;
+  transform: translateX(-50%) rotate(-3deg);
+  background: rgba(169, 194, 154, 0.6);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.polaroid-blank {
+  min-height: 230px;
+  background: linear-gradient(100deg, #fff 30%, var(--butter-soft) 50%, #fff 70%);
+  background-size: 300% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+.empty-note {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.empty-title {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-hand);
+  font-size: 2.2rem;
+  color: var(--terracotta);
+}
+
+/* ---------- Recipe pages ---------- */
+
+.back-to-pantry {
+  font-family: var(--font-hand);
+  font-size: 1.35rem;
+  color: var(--olive-700);
+  text-decoration: none;
+}
+
+.back-to-pantry:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--terracotta);
+}
+
+.polaroid-hero {
+  width: min(80%, 380px);
+  margin: 1.5rem auto 1rem;
+  transform: rotate(-2deg);
+}
+
+.recipe-title {
+  font-size: 2.5rem !important;
+  line-height: 1.15 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.recipe-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.25rem;
+  margin: 0;
+}
+
+.recipe-meta span + span::before {
+  content: "·";
+  margin-right: 1.25rem;
+  color: var(--muted);
+}
+
+.diet-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.6rem;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.diet-tags li {
+  padding: 0 0.6rem;
+  border: 1.5px solid var(--terracotta);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  color: var(--terracotta);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  text-transform: lowercase;
+}
+
+.ingredient-list {
+  margin: 0 0 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.ingredient-list li {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.tick {
+  flex-shrink: 0;
+  width: 1.2rem;
+  font-weight: 700;
+}
+
+.ingredient-list .have .tick {
+  color: var(--olive-500);
+}
+
+.ingredient-list .need {
+  color: var(--olive-800);
+}
+
+.ingredient-list .need .tick {
+  color: var(--terracotta);
+}
+
+.recipe-note {
+  margin: 0.5rem 0 1rem;
+  padding: 0.6rem 1rem;
+  line-height: 1.6;
+  transform: rotate(0.8deg);
+}
+
+.method-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.method-steps li {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+
+.method-steps p {
+  margin: 0;
+}
+
+.step-number {
+  font-family: var(--font-hand);
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--terracotta);
+  text-align: right;
+}
+
+.step-number::after {
+  content: ".";
+}
+
+.recipe-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin: 1.5rem 0 1rem;
+}
+
+/* ---------- Narrow screens: pages stack, no page turn ---------- */
+
+@media (max-width: 860px) {
+  .book {
+    padding: 8px;
+    border-radius: 14px;
+  }
+
+  .book-pages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: auto;
+  }
+
+  .book-pages::after {
+    display: none;
+  }
+
+  .page-left,
+  .page-right {
+    border-radius: 8px;
+    box-shadow: none;
+    background-image: none;
+  }
+
+  .page-scroll,
+  .page-left .page-scroll,
+  .page-right .page-scroll {
+    overflow: visible;
+    padding: 1.5rem 1.25rem 0.5rem;
+  }
+
+  .pantry-groups {
+    column-gap: 1.25rem;
+  }
+
+  .book h1 {
+    font-size: 2.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pantry-groups {
+    columns: 1;
+  }
+
+  .recipe-meta span + span::before {
+    display: none;
+  }
+
+  .polaroid-grid {
+    grid-template-columns: 1fr;
+  }
+}
