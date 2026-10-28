@@ -1,21 +1,31 @@
 import { useState } from "react";
 import api from "../api";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/Form.css";
+
+function errorMessage(error, isLogin) {
+  const data = error.response?.data;
+  if (!data) return "Can't reach Chefbook right now. Please try again.";
+  if (isLogin) return "That username and password don't match.";
+  const first = Object.values(data).flat()[0];
+  return typeof first === "string" ? first : "Something went wrong. Please try again.";
+}
 
 function Form({ route, method }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const name = method === "login" ? "Login" : "Register";
   const isLogin = method === "login";
+  const name = isLogin ? "Log in" : "Create account";
 
   const handleSubmit = async (e) => {
-    setLoading(true);
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
     try {
       const res = await api.post(route, { username, password });
@@ -26,8 +36,8 @@ function Form({ route, method }) {
       } else {
         navigate("/login");
       }
-    } catch (error) {
-      alert(error);
+    } catch (err) {
+      setError(errorMessage(err, isLogin));
     } finally {
       setLoading(false);
     }
@@ -35,40 +45,56 @@ function Form({ route, method }) {
 
   return (
     <div className="form-wrapper">
-      <form onSubmit={handleSubmit} className="form-container">
-        <h2 className="form-title">{name}</h2>
+      <form onSubmit={handleSubmit} className="form-container card">
+        <Link to="/" aria-label="Chefbook home">
+          <img src="/logo-olive.png" alt="Chefbook" className="form-logo" />
+        </Link>
+        <h1 className="form-title">{name}</h1>
+        <p className="hand form-subtitle">
+          {isLogin ? "welcome back to the kitchen" : "pull up a chair"}
+        </p>
 
-        <input
-          className="form-input"
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-        />
+        <label className="form-label">
+          Username
+          <input
+            className="input"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            autoComplete="username"
+            required
+          />
+        </label>
 
-        <input
-          className="form-input"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-        />
+        <label className="form-label">
+          Password
+          <input
+            className="input"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete={isLogin ? "current-password" : "new-password"}
+            required
+          />
+        </label>
 
-        <button className="form-button" type="submit">
-          {name}
+        {error && <p className="notice">{error}</p>}
+
+        <button className="btn form-button" type="submit" disabled={loading}>
+          {loading ? "One moment…" : name}
         </button>
 
-        <div className="form-footer">
+        <p className="form-footer">
           {isLogin ? (
-            <p>
-              Don't have an account? <a href="/register">Register</a>
-            </p>
+            <>
+              New here? <Link to="/register">Create an account</Link>
+            </>
           ) : (
-            <p>
-              Already registered? <a href="/login">Login</a>
-            </p>
+            <>
+              Already have an account? <Link to="/login">Log in</Link>
+            </>
           )}
-        </div>
+        </p>
       </form>
     </div>
   );
