@@ -18,3 +18,9 @@ node_modules/
 
 # Ignore VS Code settings
 .vscode/ 
+
+# Local development database (production uses PostgreSQL via DATABASE_URL)
+*.sqlite3
+
+# Collected static files (built on deploy)
+backend/staticfiles/
